@@ -1,0 +1,2 @@
+#!/bin/sh
+java -cp vendor/itextpdf-5.3.4.jar:vendor/jcommander-1.31-SNAPSHOT.jar:. PdfTailor $@
