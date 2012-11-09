@@ -22,7 +22,7 @@ public class PdfTailor {
     @Parameter(description = "The file to unstitch.")
     private List<String> files;
 
-    @Parameter(names = "--output", description = "The filename pattern to write to. (e.g. mydir/file_%d_name.pdf)")
+    @Parameter(names = {"--output", "-o"}, description = "The filename pattern to write to. (e.g. mydir/file_%d_name.pdf)", required = true)
     private String output;
   }
   
@@ -30,7 +30,7 @@ public class PdfTailor {
     @Parameter(description = "The list of files to stitch together.")
     private List<String> files;
     
-    @Parameter(names = "--output", description = "The filename to write to.")
+    @Parameter(names = {"--output", "-o"}, description = "The filename to write to.", required = true)
     private String output;
   }
   
@@ -43,27 +43,42 @@ public class PdfTailor {
     cli.addCommand("stitch",   stitch);
     cli.addCommand("unstitch", unstitch);
 
-    try { 
-      cli.parse(args);
+    if (args.length == 0) { 
+      usage(); 
+    } else {
+      try { 
+        cli.parse(args);
 
-      String command = "";
-      if (cli.getColumnSize() )
-      command = cli.getParsedCommand();
-      if      (command.equals("stitch"))   { stitch(stitch); } 
-      else if (command.equals("unstitch")) { unstitch(unstitch); }
-      else                                 { usage(command); }
-    } catch (MissingCommandException unrecognizedCommand) {
-      usage();
+        String command = cli.getParsedCommand();
+        if      (command.equals("stitch"))   { stitch(stitch); } 
+        else if (command.equals("unstitch")) { unstitch(unstitch); }
+        else                                 { usage(); }
+        
+      } catch (MissingCommandException unrecognizedCommand) {
+        usage();
+      }
     }
   }
   
+  public static String USAGE_MESSAGE = "pdftailor stitches and unstitches pdfs.\n\n"                        +
+                                       "Usage:\n"                                                           +
+                                       "  pdftailor COMMAND [OPTIONS] <pdf(s)>\n"                           +
+                                       "  Main commands:\n"                                                 +
+                                       "    stitch, unstitch\n\n"                                           +
+                                       "Options:\n"                                                         +
+                                       "  -o, --output\n"                                                   +
+                                       "    The file name or file pattern to which output is written.\n"    +
+                                       "    For commands like unstitch which will write multiple files\n"   +
+                                       "    a pattern including \"%d\" can be used to specify a template\n" +
+                                       "    for where files should be written (e.g. ./foo/bar_%d.pdf).\n\n" +
+                                       "Example:\n"                                                         +
+                                       "  pdftailor stitch --output merged.pdf a.pdf b.pdf\n"               +
+                                       "  pdftailor unstitch --output merged_page_%d.pdf merged.pdf\n";
+
   public static void usage() {
-    System.out.println("Usage:");
+    System.out.println(USAGE_MESSAGE);
   }
-  public static void usage( String command ) {
-    System.out.println("Usage:");
-  }
-  
+
   public static void stitch( StitchCommand cli ) throws IOException, DocumentException {
     String outputName = cli.output;
 
