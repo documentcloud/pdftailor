@@ -18,22 +18,6 @@ import com.beust.jcommander.MissingCommandException;
 
 public class PdfTailor {
   
-  static class UnstitchCommand {
-    @Parameter(description = "The file to unstitch.")
-    private List<String> files;
-
-    @Parameter(names = {"--output", "-o"}, description = "The filename pattern to write to. (e.g. mydir/file_%d_name.pdf)", required = true)
-    private String output;
-  }
-  
-  static class StitchCommand {
-    @Parameter(description = "The list of files to stitch together.")
-    private List<String> files;
-    
-    @Parameter(names = {"--output", "-o"}, description = "The filename to write to.", required = true)
-    private String output;
-  }
-  
   // Class Runner
   public static void main( String[] args ) throws IOException, DocumentException {
     StitchCommand   stitch   = new StitchCommand();
@@ -59,24 +43,13 @@ public class PdfTailor {
       }
     }
   }
-  
-  public static String USAGE_MESSAGE = "pdftailor stitches and unstitches pdfs.\n\n"                        +
-                                       "Usage:\n"                                                           +
-                                       "  pdftailor COMMAND [OPTIONS] <pdf(s)>\n"                           +
-                                       "  Main commands:\n"                                                 +
-                                       "    stitch, unstitch\n\n"                                           +
-                                       "Options:\n"                                                         +
-                                       "  -o, --output\n"                                                   +
-                                       "    The file name or file pattern to which output is written.\n"    +
-                                       "    For commands like unstitch which will write multiple files\n"   +
-                                       "    a pattern including \"%d\" can be used to specify a template\n" +
-                                       "    for where files should be written (e.g. ./foo/bar_%d.pdf).\n\n" +
-                                       "Example:\n"                                                         +
-                                       "  pdftailor stitch --output merged.pdf a.pdf b.pdf\n"               +
-                                       "  pdftailor unstitch --output merged_page_%d.pdf merged.pdf\n";
 
-  public static void usage() {
-    System.out.println(USAGE_MESSAGE);
+  static class StitchCommand {
+    @Parameter(description = "The list of files to stitch together.")
+    private List<String> files;
+    
+    @Parameter(names = {"--output", "-o"}, description = "The filename to write to.", required = true)
+    private String output;
   }
 
   public static void stitch( StitchCommand cli ) throws IOException, DocumentException {
@@ -98,7 +71,15 @@ public class PdfTailor {
     }
     document.close();
   }
-  
+
+  static class UnstitchCommand {
+    @Parameter(description = "The file to unstitch.")
+    private List<String> files;
+
+    @Parameter(names = {"--output", "-o"}, description = "The filename pattern to write to. (e.g. mydir/file_%d_name.pdf)", required = true)
+    private String output;
+  }
+
   public static void unstitch( UnstitchCommand cli ) throws IOException, DocumentException {
     String readerPath = cli.files.get(0);
     PdfReader reader = new PdfReader(readerPath);
@@ -113,7 +94,7 @@ public class PdfTailor {
       writer.close();
     }
   }
-  
+
   protected static String outputPath( String outputName, int pageNumber ) {
     Pattern templatePattern = Pattern.compile("%d");
     Pattern filePattern = Pattern.compile("^(.+)\\.pdf$");
@@ -128,4 +109,23 @@ public class PdfTailor {
     }
     return path;
   }
+
+  public static void usage() {
+    System.out.println(USAGE_MESSAGE);
+  }
+
+  public static String USAGE_MESSAGE = "pdftailor stitches and unstitches pdfs.\n\n"                        +
+                                       "Usage:\n"                                                           +
+                                       "  pdftailor COMMAND [OPTIONS] <pdf(s)>\n"                           +
+                                       "  Main commands:\n"                                                 +
+                                       "    stitch, unstitch\n\n"                                           +
+                                       "Options:\n"                                                         +
+                                       "  -o, --output\n"                                                   +
+                                       "    The file name or file pattern to which output is written.\n"    +
+                                       "    For commands like unstitch which will write multiple files\n"   +
+                                       "    a pattern including \"%d\" can be used to specify a template\n" +
+                                       "    for where files should be written (e.g. ./foo/bar_%d.pdf).\n\n" +
+                                       "Example:\n"                                                         +
+                                       "  pdftailor stitch --output merged.pdf a.pdf b.pdf\n"               +
+                                       "  pdftailor unstitch --output merged_page_%d.pdf merged.pdf\n";
 }
