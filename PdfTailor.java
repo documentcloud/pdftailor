@@ -101,7 +101,6 @@ public class PdfTailor {
   
   public static void unstitch( UnstitchCommand cli ) throws IOException, DocumentException {
     String readerPath = cli.files.get(0);
-    System.out.println("unstitching '" + readerPath + "'!");
     PdfReader reader = new PdfReader(readerPath);
     for ( int pageNumber = 0; pageNumber < reader.getNumberOfPages(); ) {
       pageNumber++;
@@ -127,7 +126,6 @@ public class PdfTailor {
     } else {
       path = outputName + "_" + pageNumber + ".pdf";
     }
-    System.out.println("outputPath: " + path);
     return path;
   }
 }
