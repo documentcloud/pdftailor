@@ -1,3 +1,15 @@
 task :compile do
-  `javac -Xlint:unchecked -cp jars/itextpdf-5.3.4.jar:jars/jcommander-1.31-SNAPSHOT.jar:. java/src/org/documentcloud/pdftailor/PdfTailor.java`
+  `javac -Xlint:unchecked -classpath #{jars} #{sources}`
+end
+
+task :jar do
+  `cd java/src/; jar cvf ../../jars/pdftailor.jar`
+end
+
+def jars(prefix = nil)
+  Dir.open("jars").select{ |j| j =~ /jar$/ }.map{ |jar| "#{ prefix + "/" if prefix }jars/#{jar}" }.join(":")
+end
+
+def sources
+  %w(java/src/org/documentcloud/pdftailor/PdfTailor.java).join(" ")
 end
