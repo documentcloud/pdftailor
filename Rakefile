@@ -3,7 +3,7 @@ task :compile do
 end
 
 task :jar do
-  `cd java/src/; jar cvf ../../jars/pdftailor.jar`
+  `cd java/src/; jar cvf ../../jars/pdftailor.jar org/documentcloud/pdftailor/*.class`
 end
 
 def jars(prefix = nil)
