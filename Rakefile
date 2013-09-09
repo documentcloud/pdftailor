@@ -1,8 +1,17 @@
+desc "cleanup intermediate compilation files"
+task :cleanup do
+  puts 'cleaning up'
+  FileUtils.rm Dir.glob("./java/src/org/documentcloud/pdftailor/*.class")
+end
+
+desc "Compile Java sources"
 task :compile do
+  puts "compiling..."
   `javac -Xlint:unchecked -classpath #{jars} #{sources}`
 end
 
-task :jar do
+desc "Compile Java sources and create the pdftailor.jar package"
+task :jar => [:cleanup, :compile] do
   `cd java/src/; jar cvf ../../jars/pdftailor.jar org/documentcloud/pdftailor/*.class`
 end
 
