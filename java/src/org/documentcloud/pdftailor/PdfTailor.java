@@ -3,7 +3,6 @@ package org.documentcloud.pdftailor;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Iterator;
@@ -71,15 +70,7 @@ public class PdfTailor {
    System.out.println(USAGE_MESSAGE);
   }
 
-  // The stitch command parser.
-  static class StitchCommand {
-    @Parameter(description = "The list of files to stitch together.")
-    private List<String> files;
-    
-    @Parameter(names = {"--output", "-o"}, description = "The filename to write to.", required = true)
-    private String output;
-  }
-
+  // Stitch together an ordered list of pdfs into a single pdf.
   public static void stitch( StitchCommand cli ) throws IOException, DocumentException {
     String outputName = cli.output;
 
@@ -105,15 +96,16 @@ public class PdfTailor {
     document.close();
   }
 
-  // The unstitch command parser.
-  static class UnstitchCommand {
-    @Parameter(description = "The file to unstitch.")
-    private List<String> files;
+    // The stitch command parser.
+    static class StitchCommand {
+      @Parameter(description = "The list of files to stitch together.")
+      private List<String> files;
+    
+      @Parameter(names = {"--output", "-o"}, description = "The filename to write to.", required = true)
+      private String output;
+    }
 
-    @Parameter(names = {"--output", "-o"}, description = "The filename pattern to write to. (e.g. mydir/file_%d_name.pdf)", required = true)
-    private String output;
-  }
-
+  // unstitch a pdf into its constitutent pages.
   public static void unstitch( UnstitchCommand cli ) throws IOException, DocumentException {
     // use JCommander's default file list to get the file to split.
     String readerPath = cli.files.get(0);
@@ -124,7 +116,9 @@ public class PdfTailor {
       pageNumber++;
 
       Document document = new Document();
-      PdfCopy writer = new PdfCopy(document, new FileOutputStream(outputPath(cli.output, pageNumber)));
+      String outputName;
+      if (cli.output != null && cli.output.length() > 0) { outputName = cli.output; } else { outputName = readerPath; }
+      PdfCopy writer = new PdfCopy(document, new FileOutputStream(outputPath(outputName, pageNumber)));
 
       document.open();
       writer.addPage(writer.getImportedPage(reader, pageNumber));
@@ -132,6 +126,15 @@ public class PdfTailor {
       writer.close();
     }
   }
+
+    // The unstitch command parser.
+    static class UnstitchCommand {
+      @Parameter(description = "The file to unstitch.")
+      private List<String> files;
+
+      @Parameter(names = {"--output", "-o"}, description = "The filename pattern to write to. (e.g. mydir/file_%d_name.pdf)")
+      private String output;
+    }
 
   // Return a file path for page when provided with a page number and
   // either an existing file path, or a path template.
