@@ -1,2 +1,5 @@
 .rvmrc
+.ruby-version
 .DS_STORE
+*.class
+MANIFEST.MF
