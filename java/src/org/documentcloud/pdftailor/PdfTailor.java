@@ -50,7 +50,7 @@ public class PdfTailor {
     }
   }
 
-  public static String VERSION       = "0.0.1";
+  public static String VERSION       = "0.0.3";
   public static String USAGE_MESSAGE = "pdftailor stitches and unstitches pdfs.\n\n"                        +
                                        "Version: " + VERSION + "\n\n"                                       +
                                        "Usage:\n"                                                           +
@@ -114,7 +114,7 @@ public class PdfTailor {
     try { 
       reader = new PdfReader(readerPath);
     } catch (BadPasswordException e) { 
-      System.exit(0);
+      System.exit(1);
     }
     
     // Loop over the document's pages by page number.
