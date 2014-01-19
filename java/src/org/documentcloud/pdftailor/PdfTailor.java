@@ -12,6 +12,7 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.exceptions.BadPasswordException;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.JCommander;
@@ -109,7 +110,12 @@ public class PdfTailor {
   public static void unstitch( UnstitchCommand cli ) throws IOException, DocumentException {
     // use JCommander's default file list to get the file to split.
     String readerPath = cli.files.get(0);
-    PdfReader reader = new PdfReader(readerPath);
+    PdfReader reader = null;
+    try { 
+      reader = new PdfReader(readerPath);
+    } catch (BadPasswordException e) { 
+      System.exit(0);
+    }
     
     // Loop over the document's pages by page number.
     for ( int pageNumber = 0; pageNumber < reader.getNumberOfPages(); ) {
