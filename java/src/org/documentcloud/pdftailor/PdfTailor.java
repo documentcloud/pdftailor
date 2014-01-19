@@ -50,7 +50,7 @@ public class PdfTailor {
     }
   }
 
-  public static String VERSION       = "0.0.3";
+  public static String VERSION       = "0.0.4";
   public static String USAGE_MESSAGE = "pdftailor stitches and unstitches pdfs.\n\n"                        +
                                        "Version: " + VERSION + "\n\n"                                       +
                                        "Usage:\n"                                                           +
@@ -114,6 +114,7 @@ public class PdfTailor {
     try { 
       reader = new PdfReader(readerPath);
     } catch (BadPasswordException e) { 
+      System.out.println("Error: Encrypted PDF");
       System.exit(1);
     }
     
