@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name      = 'pdftailor'
-  s.version   = '0.0.1'
-  s.date      = '2013-09-09'
+  s.version   = '0.0.2'
+  s.date      = '2014-01-19'
 
   s.summary     = "Stitching and unstitching for PDFs"
   s.description = <<-EOS
