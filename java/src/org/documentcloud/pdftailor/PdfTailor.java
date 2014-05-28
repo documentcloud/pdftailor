@@ -114,7 +114,7 @@ public class PdfTailor {
     try { 
       reader = new PdfReader(readerPath);
     } catch (BadPasswordException e) { 
-      System.out.println("Error: Encrypted PDF");
+      System.out.println("Error: Encrypted PDF\n");
       System.exit(1);
     }
     
